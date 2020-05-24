@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "dev": "nodemon ./src/server.js"
+  },
+  "name": "back_end",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mariadb": "^2.3.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^5.21.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}

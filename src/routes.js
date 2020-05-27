@@ -5,26 +5,31 @@ const CompanyController = require("./controllers/CompanyController");
 const PatientController = require("./controllers/PatientController");
 const ExamController = require("./controllers/ExamController");
 
+const AuthMiddleware = require("./middlewares/auth");
+
 const routes = express.Router();
 
 // USER ROUTES
-routes.get('/users/list', UserController.list)
-routes.post('/users/insert', UserController.insert);
-routes.delete('/users/delete/:user_id', UserController.delete);
+routes.post('/users/login', UserController.login);
+
+routes.get('/users/list', AuthMiddleware, UserController.list)
+routes.post('/users/insert', AuthMiddleware, UserController.insert);
+routes.delete('/users/delete/:user_id', AuthMiddleware, UserController.delete);
+
 
 // COMPANY ROUTES
-routes.get('/companies/list', CompanyController.list)
-routes.post('/companies/insert', CompanyController.insert);
-routes.delete('/companies/delete/:company_id', CompanyController.delete);
+routes.get('/companies/list', AuthMiddleware, CompanyController.list)
+routes.post('/companies/insert', AuthMiddleware, CompanyController.insert);
+routes.delete('/companies/delete/:company_id', AuthMiddleware, CompanyController.delete);
 
 // PATIENT ROUTES
-routes.get('/patients/list', PatientController.list)
-routes.post('/patients/insert/company/:company_id', PatientController.insert);
-routes.delete('/patients/delete/:patient_id', PatientController.delete);
+routes.get('/patients/list', AuthMiddleware, PatientController.list)
+routes.post('/patients/insert/company/:company_id', AuthMiddleware, PatientController.insert);
+routes.delete('/patients/delete/:patient_id', AuthMiddleware, PatientController.delete);
 
 //EXAM ROUTES
-routes.get('/exams/list', ExamController.list)
-routes.post('/exams/insert/user/:user_id/patient/:patient_id', ExamController.insert);
-routes.delete('/exams/delete/:id', ExamController.delete);
+routes.get('/exams/list', AuthMiddleware, ExamController.list)
+routes.post('/exams/insert/user/:user_id/patient/:patient_id', AuthMiddleware, ExamController.insert);
+routes.delete('/exams/delete/:id', AuthMiddleware, ExamController.delete);
 
 module.exports = routes

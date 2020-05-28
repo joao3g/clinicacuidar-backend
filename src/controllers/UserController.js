@@ -1,13 +1,32 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 require("dotenv").config();
 
 module.exports = {
     async insert(req, res){
         const { name, email, password } = req.body;
 
-        const user = await User.create({ name, email, password });
-        res.json(user);
+        await bcrypt.hash(password, saltRounds, async function(err, hash) {
+            if(err) return res.status(400).json({ error: err });
+
+            const [user, created] = await User.findOrCreate({
+                where: { email },
+                defaults: { 
+                    name, 
+                    email, 
+                    password: hash 
+                }
+            });
+
+            if(!created) return res.status(409).json({ error: "User already exists" })
+
+            return res.json(user);
+        });
+
     },
 
     async list (req, res){
@@ -27,18 +46,24 @@ module.exports = {
         return res.json()
     },
 
-    async login(req, res, next){
+    async login(req, res){
         var { email, password } = req.body;
 
         const user = await User.findOne({ 
-            where: { email, password },
-            attributes: { exclude: ['password'] }
+            where: { email }
         });
-        if(!user) return res.status(404).json({ error: "Email or password are incorrect" });
 
-        var { id, name, email } = user;
-        const token = jwt.sign({ id, name, email }, process.env.SECRET);
-        
-        return res.json({ user, token });
+        if(!user) return res.status(404).json({ error: "Email not found" });
+
+        await bcrypt.compare(password, user.password, async function(err, result){
+            if(err) return res.status(400).json({ error: err });
+            if(!result) return res.status(404).json({ error: "Password not found" });
+
+            var { id, name, email } = user;
+            const token = jwt.sign({ id, name, email }, process.env.SECRET);
+            
+            return res.json({ token });
+        });
+
     }
 };

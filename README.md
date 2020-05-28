@@ -1,10 +1,18 @@
 # Rest API Clinica Cuidar
 Rest API made on node.js with sequelize and express
 
-Rename .env.example to .env for use this repository in your machine
+## Dependencies
 
-Insert `yarn add` or `npm install` to download the dependencies. 
+- ### 1. Envoriment variables  
 
-Run the line below to start: 
+    - Rename ___.env.example___ to ___.env___ and add your envoriment variables to use this repository in your machine.
 
-```yarn dev```
+- ### 2. Install dependencies  
+
+    - run: __yarn__ or __npm install__
+
+## Start
+
+```
+yarn dev
+```
